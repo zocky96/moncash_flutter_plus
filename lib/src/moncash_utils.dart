@@ -70,6 +70,7 @@ class MonCash {
         log(e.toString());
       }
     }
+    return null;
   }
 
   Future<String?> generatePaymentUrl(String authToken, {required String amount, required String orderId}) async {

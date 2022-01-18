@@ -34,13 +34,19 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   @override
   void initState() {
     monCash = MonCash(clientId: widget.clientId, clientSecret: widget.clientSecret, staging: widget.isStaging);
-    log(orderId);
     if (widget.orderId != null) {
       orderId = widget.orderId!;
     }
-    monCash
-        .getWebviewUrl(amount: widget.amount.toString(), orderId: orderId)
-        .then((value) => setState(() => paymentUrl = value));
+    monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
+      if (value != null) {
+        setState(() => paymentUrl = value);
+      } else {
+        Navigator.pop(
+            context,
+            PaymentResponse(
+                status: paymentStatus.failed, message: "Error in generating token, Please try again later.."));
+      }
+    });
     super.initState();
   }
 
