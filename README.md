@@ -1,39 +1,82 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
+<p align="center">
+<h1>
+Flutter Moncash Payment Plugin
+</h1>
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+</p>
+<p align="center">
+	<a href="https://pub.dev/packages/infinite_scroll_pagination" rel="noopener" target="_blank"><img src="https://img.shields.io/pub/v/infinite_scroll_pagination.svg" alt="Pub.dev Badge"></a>
+	<a href="https://github.com/EdsonBueno/infinite_scroll_pagination/actions" rel="noopener" target="_blank"><img src="https://github.com/EdsonBueno/infinite_scroll_pagination/workflows/build/badge.svg" alt="GitHub Build Badge"></a>
+	<a href="https://codecov.io/gh/EdsonBueno/infinite_scroll_pagination" rel="noopener" target="_blank"><img src="https://codecov.io/gh/EdsonBueno/infinite_scroll_pagination/branch/master/graph/badge.svg?token=B0CT995PHU" alt="Code Coverage Badge"></a>
+	<a href="https://gitter.im/infinite_scroll_pagination/community" rel="noopener" target="_blank"><img src="https://badges.gitter.im/infinite_scroll_pagination/community.svg" alt="Gitter Badge"></a>
+	<a href="https://github.com/tenhobi/effective_dart" rel="noopener" target="_blank"><img src="https://img.shields.io/badge/style-effective_dart-40c4ff.svg" alt="Effective Dart Badge"></a>
+	<a href="https://opensource.org/licenses/MIT" rel="noopener" target="_blank"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="MIT License Badge"></a>
+	<a href="https://github.com/EdsonBueno/infinite_scroll_pagination" rel="noopener" target="_blank"><img src="https://img.shields.io/badge/platform-flutter-ff69b4.svg" alt="Flutter Platform Badge"></a>
+</p>
 
-## Features
+---
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+![image](https://www.digicelgroup.com/etc/designs/haiti-en-moncash/_jcr_content/global/headerLogo.asset.spool/MonCash_Logo-180-90-white.png)
 
-## Getting started
+A flutter plugin for moncash integration for Android and Ios.
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+#### If you use this library in your app, please let me know and I'll add it to the list.
 
-## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+<p align="center">
+<img height="400" alt="demoApp" src="https://raw.githubusercontent.com/gauravmehta13/moncash_flutter/master/screenshots/1.jpg">
+<img height="400" alt="demoApp" src="https://raw.githubusercontent.com/gauravmehta13/moncash_flutter/master/screenshots/2.jpg">
+<img height="400" alt="demoApp" src="https://raw.githubusercontent.com/gauravmehta13/moncash_flutter/master/screenshots/3.jpg">
+</p>
 
-```dart
-const like = 'sample';
+
+### Installing
+Add this in pubspec.yaml
+```
+  moncash_flutter: 
+```
+### Using
+```
+import 'package:moncash_flutter/moncash_flutter.dart';
 ```
 
-## Additional information
+```
+   WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      PaymentResponse? data = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MonCashPayment(
+                  isStaging: true,
+                  amount: Amount,
+                  clientId: "Id",
+                  clientSecret: clientSecret,
+                  loadingWidget: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      LoadingScreen(color: Colors.white),
+                      Text("Redirecting to payment gateway..."),
+                    ],
+                  ),
+                )),
+      );
+      if (data != null && data.status == paymentStatus.success && data.transanctionId != null) {
+        setState(() {
+          paymentSuccess = true;
+        });
+        placeOrder(transanctionId: data.transanctionId, orderId: data.orderId);
+      } else {
+        if (data == null) {
+          showErrorDialog(context, "ERROR: Payment Failed");
+        } else {
+          showErrorDialog(context, "ERROR: ${data.message}");
+        }
+        setState(() {
+          isLoading = false;
+          paymentSuccess = false;
+        });
+      }
+    });
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+If payment is successful PaymentResponse  will contain the transanctionId from moncash.
