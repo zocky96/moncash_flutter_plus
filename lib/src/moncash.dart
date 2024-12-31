@@ -104,7 +104,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(Uri.parse("https://"+paymentUrl),
+      ..loadRequest(Uri.parse("https://www.google.com"),
       );
     print(paymentUrl);
 
@@ -118,8 +118,9 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     return Scaffold(
       body: Stack(
         children: [
+          Text('${paymentUrl}'),
           //if (paymentUrl != "")
-            WebViewWidget(controller: _webViewController),
+            //WebViewWidget(controller: _webViewController),
           //if (paymentUrl == "" || isLoading)
             //Container(
             //    color: Colors.white,
