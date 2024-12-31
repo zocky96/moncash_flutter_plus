@@ -43,7 +43,6 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
-      log(value);
       if (value != null) {
         setState(() => paymentUrl = value);
       } else {
@@ -105,6 +104,8 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     //   )
     //   ..loadRequest(Uri.parse('https://www.google.com'));
     // print(paymentUrl);
+    _webViewController = WebViewController()
+      ..loadRequest(Uri.parse('https://www.google.com'));
 
   }
 
@@ -116,12 +117,12 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       body: Column(
         children: [
           //if (paymentUrl != "")
-           // WebViewWidget(controller: _webViewController),
+            WebViewWidget(controller: _webViewController),
           //if (paymentUrl == "" || isLoading)
-            Container(
-                color: Colors.white,
-                height: MediaQuery.of(context).size.height,
-                child: Center(child: widget.loadingWidget ?? const CircularProgressIndicator()))
+            //Container(
+            //    color: Colors.white,
+            //    height: MediaQuery.of(context).size.height,
+            //    child: Center(child: widget.loadingWidget ?? const CircularProgressIndicator()))
         ],
       ),
     );
