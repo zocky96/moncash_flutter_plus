@@ -37,6 +37,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   String orderId = DateTime.now().millisecondsSinceEpoch.toString();
   @override
   void initState() {
+    super.initState();
     monCash = MonCash(clientId: widget.clientId, clientSecret: widget.clientSecret, staging: widget.isStaging);
     if (widget.orderId != null) {
       orderId = widget.orderId!;
@@ -64,6 +65,32 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
           onPageFinished: (String url) {
             setState(() {
+              isLoading = false;
+            });
+
+            log(url);
+            //getting transanction id from moncash url
+            if (url.contains('transactionId')) {
+              final transactionId = url.split('transactionId=')[1];
+              log('transactionId: $transactionId');
+              //   monCash.retrieveTransactionPayment(transactionId);
+              //  displaySnackBar("Payment Successfull $transactionId", context);
+              Navigator.pop(
+                  context,
+                  PaymentResponse(
+                      transanctionId: transactionId,
+                      orderId: orderId,
+                      status: paymentStatus.success,
+                      message: "Payment Successfull $transactionId"));
+            }
+            if (url.contains('error')) {
+              final errorData = url.split('error=');
+              String error = errorData.length > 1 ? errorData[1] : 'Error, Please Try Again Later';
+              log('error: $error');
+              Navigator.pop(
+                  context, PaymentResponse(status: paymentStatus.failed, message: error, orderId: orderId));
+            }
+            setState(() {
               _isLoading = false;
             });
           },
@@ -75,9 +102,13 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://' +paymentUrl));
+      ..loadRequest(
+        LoadRequestParams(
+          uri: Uri.parse('https://'+paymentUrl),
+        ),
+      );
     print(paymentUrl);
-    super.initState();
+
   }
 
 
