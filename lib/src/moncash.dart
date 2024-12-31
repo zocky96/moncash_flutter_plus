@@ -104,7 +104,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(Uri.parse("https://www.google.com"),
+      ..loadRequest(Uri.parse("${paymentUrl}"),
       );
     print(paymentUrl);
 
