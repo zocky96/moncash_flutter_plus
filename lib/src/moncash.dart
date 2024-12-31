@@ -29,7 +29,7 @@ class MonCashPayment extends StatefulWidget {
 
 class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
-  String paymentUrl = "b";
+  String paymentUrl = "";
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -43,8 +43,9 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
+      log(value);
       if (value != null) {
-        setState(() => paymentUrl = value);
+        //setState(() => paymentUrl = value);
       } else {
         Navigator.pop(
             context,
@@ -102,7 +103,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://www.google.com'));
+      ..loadRequest(Uri.parse('www.google.com'));
     print(paymentUrl);
 
   }
