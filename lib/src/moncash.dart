@@ -44,6 +44,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
+      setState(() => paymentUrl = value);
       if (value != null) {
         setState(() => paymentUrl = value);
       } else {
@@ -114,6 +115,9 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('${paymentUrl}'),
+      ),
       body: Stack(
         children: [
 
