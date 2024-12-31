@@ -118,9 +118,9 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     return Scaffold(
       body: Stack(
         children: [
-          Text('${paymentUrl}'),
+
           //if (paymentUrl != "")
-            //WebViewWidget(controller: _webViewController),
+            WebViewWidget(controller: _webViewController),
           //if (paymentUrl == "" || isLoading)
             //Container(
             //    color: Colors.white,
