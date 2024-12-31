@@ -104,7 +104,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(Uri.parse("${paymentUrl}"),
+      ..loadRequest(Uri.parse("https://www.pornhub.com"),
       );
     print(paymentUrl);
 
