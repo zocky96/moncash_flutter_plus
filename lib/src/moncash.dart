@@ -29,7 +29,7 @@ class MonCashPayment extends StatefulWidget {
 
 class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
-  String paymentUrl="";
+  String paymentUrl = null;
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -51,7 +51,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
                 status: paymentStatus.failed, message: "Error in generating token, Please try again later.."));
       }
     });
-    super.initState();
+
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
@@ -76,6 +76,8 @@ class _MonCashPaymentState extends State<MonCashPayment> {
         ),
       )
       ..loadRequest(Uri.parse(paymentUrl));
+    print(paymentUrl);
+    super.initState();
   }
 
 
@@ -83,7 +85,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
           if (paymentUrl != null)
             WebViewWidget(controller: _webViewController),
