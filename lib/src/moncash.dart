@@ -30,7 +30,7 @@ class MonCashPayment extends StatefulWidget {
 class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
   String? paymentUrl;
-
+  var theurl="";
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -44,7 +44,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
-      setState(() => paymentUrl = value);
+      setState(() => theurl = value);
       if (value != null) {
         setState(() => paymentUrl = value);
       } else {
@@ -104,7 +104,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(Uri.parse("https://www.pornhub.com"),
+      ..loadRequest(Uri.parse("${theurl}"),
       );
     print(paymentUrl);
 
