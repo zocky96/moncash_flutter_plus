@@ -45,7 +45,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
       log(value);
       if (value != null) {
-        //setState(() => paymentUrl = value);
+        setState(() => paymentUrl = value);
       } else {
         Navigator.pop(
             context,
@@ -103,7 +103,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('www.google.com'));
+      ..loadRequest(Uri.parse('https://www.google.com'));
     print(paymentUrl);
 
   }
@@ -115,8 +115,8 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     return Scaffold(
       body: Column(
         children: [
-          if (paymentUrl != "")
-            WebViewWidget(controller: _webViewController),
+          //if (paymentUrl != "")
+           // WebViewWidget(controller: _webViewController),
           if (paymentUrl == "" || isLoading)
             Container(
                 color: Colors.white,
