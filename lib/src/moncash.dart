@@ -116,18 +116,18 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${paymentUrl}'),
+        title: Text('Mon cash payment'),
       ),
       body: Stack(
         children: [
 
-          //if (paymentUrl != "")
+          if (paymentUrl != null)
             WebViewWidget(controller: _webViewController),
-          //if (paymentUrl == "" || isLoading)
-            //Container(
-            //    color: Colors.white,
-            //    height: MediaQuery.of(context).size.height,
-            //    child: Center(child: widget.loadingWidget ?? const CircularProgressIndicator()))
+          if (paymentUrl == null || isLoading)
+            Container(
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height,
+                child: Center(child: widget.loadingWidget ?? const CircularProgressIndicator()))
         ],
       ),
     );
