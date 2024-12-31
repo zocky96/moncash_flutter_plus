@@ -29,7 +29,8 @@ class MonCashPayment extends StatefulWidget {
 
 class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
-
+  String paymentUrl = "";
+  super.initState();
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -43,8 +44,6 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
-      print("okokokokokokok ${value}");
-      log('zozozzozozozzzozzozzozoo: $value');
       if (value != null) {
         setState(() => paymentUrl = value);
       } else {
@@ -108,11 +107,10 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       );
     print(paymentUrl);
 
-    super.initState();
   }
 
 
-  String? paymentUrl;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
