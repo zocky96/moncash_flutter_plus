@@ -44,7 +44,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
-      setState(() => theurl = value);
+      setState(() => theurl = "${value}");
       if (value != null) {
         setState(() => paymentUrl = value);
       } else {
