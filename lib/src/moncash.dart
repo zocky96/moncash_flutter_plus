@@ -30,7 +30,7 @@ class MonCashPayment extends StatefulWidget {
 class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
   String paymentUrl = "";
-  super.initState();
+
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -38,7 +38,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   String orderId = DateTime.now().millisecondsSinceEpoch.toString();
   @override
   void initState() {
-
+    super.initState();
     monCash = MonCash(clientId: widget.clientId, clientSecret: widget.clientSecret, staging: widget.isStaging);
     if (widget.orderId != null) {
       orderId = widget.orderId!;
