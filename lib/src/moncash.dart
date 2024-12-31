@@ -29,7 +29,7 @@ class MonCashPayment extends StatefulWidget {
 
 class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
-  String paymentUrl = "";
+  String paymentUrl = "b";
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -102,11 +102,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           },
         ),
       )
-      ..loadRequest(
-        LoadRequestParams(
-          uri: Uri.parse('https://www.google.com'),
-        ),
-      );
+      ..loadRequest(Uri.parse('https://www.google.com'));
     print(paymentUrl);
 
   }
