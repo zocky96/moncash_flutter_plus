@@ -28,6 +28,9 @@ class MonCashPayment extends StatefulWidget {
 }
 
 class _MonCashPaymentState extends State<MonCashPayment> {
+  late final WebViewController _webViewController;
+  bool _isLoading = true;
+  bool _hasError = false;
   late MonCash monCash;
   bool isLoading = true;
   String orderId = DateTime.now().millisecondsSinceEpoch.toString();
