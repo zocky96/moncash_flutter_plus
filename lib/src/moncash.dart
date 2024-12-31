@@ -105,7 +105,8 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     //   ..loadRequest(Uri.parse('https://www.google.com'));
     // print(paymentUrl);
     _webViewController = WebViewController()
-      ..loadRequest(Uri.parse('https://www.google.com'));
+      ..loadRequest(Uri.parse('https://www.google.com'),
+      );
 
   }
 
@@ -114,7 +115,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
           //if (paymentUrl != "")
             WebViewWidget(controller: _webViewController),
