@@ -29,7 +29,7 @@ class MonCashPayment extends StatefulWidget {
 
 class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
-  String paymentUrl = null;
+  String paymentUrl = "";
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -87,9 +87,9 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     return Scaffold(
       body: Column(
         children: [
-          if (paymentUrl != null)
+          if (paymentUrl != "")
             WebViewWidget(controller: _webViewController),
-          if (paymentUrl == null || isLoading)
+          if (paymentUrl == "" || isLoading)
             Container(
                 color: Colors.white,
                 height: MediaQuery.of(context).size.height,
