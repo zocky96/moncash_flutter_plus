@@ -54,57 +54,57 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       }
     });
 
-    _webViewController = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (String url) {
-            setState(() {
-              _isLoading = true;
-              _hasError = false;
-            });
-          },
-          onPageFinished: (String url) {
-            setState(() {
-              isLoading = false;
-            });
-
-            log(url);
-            //getting transanction id from moncash url
-            if (url.contains('transactionId')) {
-              final transactionId = url.split('transactionId=')[1];
-              log('transactionId: $transactionId');
-              //   monCash.retrieveTransactionPayment(transactionId);
-              //  displaySnackBar("Payment Successfull $transactionId", context);
-              Navigator.pop(
-                  context,
-                  PaymentResponse(
-                      transanctionId: transactionId,
-                      orderId: orderId,
-                      status: paymentStatus.success,
-                      message: "Payment Successfull $transactionId"));
-            }
-            if (url.contains('error')) {
-              final errorData = url.split('error=');
-              String error = errorData.length > 1 ? errorData[1] : 'Error, Please Try Again Later';
-              log('error: $error');
-              Navigator.pop(
-                  context, PaymentResponse(status: paymentStatus.failed, message: error, orderId: orderId));
-            }
-            setState(() {
-              _isLoading = false;
-            });
-          },
-          onWebResourceError: (WebResourceError error) {
-            setState(() {
-              _isLoading = false;
-              _hasError = true;
-            });
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse('https://www.google.com'));
-    print(paymentUrl);
+    // _webViewController = WebViewController()
+    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //   ..setNavigationDelegate(
+    //     NavigationDelegate(
+    //       onPageStarted: (String url) {
+    //         setState(() {
+    //           _isLoading = true;
+    //           _hasError = false;
+    //         });
+    //       },
+    //       onPageFinished: (String url) {
+    //         setState(() {
+    //           isLoading = false;
+    //         });
+    //
+    //         log(url);
+    //         //getting transanction id from moncash url
+    //         if (url.contains('transactionId')) {
+    //           final transactionId = url.split('transactionId=')[1];
+    //           log('transactionId: $transactionId');
+    //           //   monCash.retrieveTransactionPayment(transactionId);
+    //           //  displaySnackBar("Payment Successfull $transactionId", context);
+    //           Navigator.pop(
+    //               context,
+    //               PaymentResponse(
+    //                   transanctionId: transactionId,
+    //                   orderId: orderId,
+    //                   status: paymentStatus.success,
+    //                   message: "Payment Successfull $transactionId"));
+    //         }
+    //         if (url.contains('error')) {
+    //           final errorData = url.split('error=');
+    //           String error = errorData.length > 1 ? errorData[1] : 'Error, Please Try Again Later';
+    //           log('error: $error');
+    //           Navigator.pop(
+    //               context, PaymentResponse(status: paymentStatus.failed, message: error, orderId: orderId));
+    //         }
+    //         setState(() {
+    //           _isLoading = false;
+    //         });
+    //       },
+    //       onWebResourceError: (WebResourceError error) {
+    //         setState(() {
+    //           _isLoading = false;
+    //           _hasError = true;
+    //         });
+    //       },
+    //     ),
+    //   )
+    //   ..loadRequest(Uri.parse('https://www.google.com'));
+    // print(paymentUrl);
 
   }
 
@@ -117,7 +117,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
         children: [
           //if (paymentUrl != "")
            // WebViewWidget(controller: _webViewController),
-          if (paymentUrl == "" || isLoading)
+          //if (paymentUrl == "" || isLoading)
             Container(
                 color: Colors.white,
                 height: MediaQuery.of(context).size.height,
