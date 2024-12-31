@@ -60,7 +60,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           if (paymentUrl != null)
             WebView(
               initialUrl: paymentUrl,
-              
+              javascriptMode: JavascriptMode.unrestricted,
               onPageFinished: (url) {
                 setState(() {
                   isLoading = false;
