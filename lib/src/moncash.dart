@@ -48,7 +48,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
 
       if (value != null) {
         _loadUrl() async{
-          setState(() => paymentUrl = await "${value}");
+          setState(() => paymentUrl = "${value}");
         }
       } else {
         Navigator.pop(
