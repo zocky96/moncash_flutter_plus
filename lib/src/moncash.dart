@@ -59,7 +59,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     });
 
     _loadUrl() async{
-      setState(() => myUrl = paymentUrl);
+      setState(() => myUrl = "${paymentUrl}");
     }
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
