@@ -31,6 +31,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   late final WebViewController _webViewController;
   late final String? paymentUrl;
   var theurl="";
+  String myUrl = "";
   bool _isLoading = true;
   bool _hasError = false;
   late MonCash monCash;
@@ -44,9 +45,11 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
-      setState(() => theurl = "${value}");
+
       if (value != null) {
-        setState(() => paymentUrl = value);
+        _loadUrl() async{
+          setState(() => paymentUrl = await "${value}");
+        }
       } else {
         Navigator.pop(
             context,
@@ -55,6 +58,9 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       }
     });
 
+    _loadUrl() async{
+      setState(() => myUrl = paymentUrl);
+    }
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
@@ -116,7 +122,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mon cash payment'),
+        title: Text('${myUrl}'),
       ),
       body: Stack(
         children: [
