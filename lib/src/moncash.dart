@@ -73,7 +73,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
           if (paymentUrl != null)
             InAppWebView(
               key: webViewKey,
-              initialUrlRequest: URLRequest(url: Uri.parse(paymentUrl!)),
+              initialUrlRequest: URLRequest(url: WebUri(paymentUrl!)),
               initialOptions: InAppWebViewGroupOptions(
                 crossPlatform: InAppWebViewOptions(javaScriptEnabled: true),
               ),
