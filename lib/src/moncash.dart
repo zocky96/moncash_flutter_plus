@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'moncash_utils.dart';
 import 'response_model.dart';
@@ -13,6 +13,7 @@ class MonCashPayment extends StatefulWidget {
   final String clientSecret;
   final Widget? loadingWidget;
   final bool isStaging;
+
   const MonCashPayment({
     required this.amount,
     this.orderId,
@@ -29,7 +30,8 @@ class MonCashPayment extends StatefulWidget {
 
 class _MonCashPaymentState extends State<MonCashPayment> {
   late MonCash monCash;
-  late final WebViewController _webViewController;
+  final GlobalKey webViewKey = GlobalKey();
+  InAppWebViewController? webViewController;
   bool isLoading = true;
   String orderId = DateTime.now().millisecondsSinceEpoch.toString();
   String? paymentUrl;
@@ -51,51 +53,13 @@ class _MonCashPaymentState extends State<MonCashPayment> {
     monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
       if (value != null) {
         setState(() => paymentUrl = value);
-
-        // Initialiser le WebViewController avec l'URL de paiement
-        _webViewController = WebViewController()
-          ..loadRequest(Uri.parse(paymentUrl!))
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..setNavigationDelegate(
-            NavigationDelegate(
-              onPageFinished: (url) {
-                setState(() => isLoading = false);
-                log(url);
-
-                if (url.contains('transactionId')) {
-                  final transactionId = Uri.parse(url).queryParameters['transactionId'];
-                  log('transactionId: $transactionId');
-                  Navigator.pop(
-                    context,
-                    // PaymentResponse(
-                    //   transanctionId: transactionId,
-                    //   orderId: orderId,
-                    //   status: paymentStatus.success,
-                    //   message: "Payment Successful $transactionId",
-                    // ),
-                  );
-                } else if (url.contains('error')) {
-                  final error = Uri.parse(url).queryParameters['error'] ?? 'Error, Please Try Again Later';
-                  log('error: $error');
-                  Navigator.pop(
-                    context
-                    // PaymentResponse(
-                    //   status: paymentStatus.failed,
-                    //   message: error,
-                    //   orderId: orderId,
-                    // ),
-                  );
-                }
-              },
-            ),
-          );
       } else {
         Navigator.pop(
           context,
-          // PaymentResponse(
-          //   status: paymentStatus.failed,
-          //   message: "Error in generating token, Please try again later.",
-          // ),
+          PaymentResponse(
+            status: paymentStatus.failed,
+            message: "Error in generating token, Please try again later.",
+          ),
         );
       }
     });
@@ -107,7 +71,45 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       body: Stack(
         children: [
           if (paymentUrl != null)
-            WebViewWidget(controller: _webViewController),
+            InAppWebView(
+              key: webViewKey,
+              initialUrlRequest: URLRequest(url: Uri.parse(paymentUrl!)),
+              initialOptions: InAppWebViewGroupOptions(
+                crossPlatform: InAppWebViewOptions(javaScriptEnabled: true),
+              ),
+              onWebViewCreated: (controller) {
+                webViewController = controller;
+              },
+              onLoadStop: (controller, url) {
+                setState(() => isLoading = false);
+                log(url.toString());
+
+                if (url.toString().contains('transactionId')) {
+                  final transactionId = Uri.parse(url.toString()).queryParameters['transactionId'];
+                  log('transactionId: $transactionId');
+                  Navigator.pop(
+                    context,
+                    PaymentResponse(
+                      transanctionId: transactionId,
+                      orderId: orderId,
+                      status: paymentStatus.success,
+                      message: "Payment Successful $transactionId",
+                    ),
+                  );
+                } else if (url.toString().contains('error')) {
+                  final error = Uri.parse(url.toString()).queryParameters['error'] ?? 'Error, Please Try Again Later';
+                  log('error: $error');
+                  Navigator.pop(
+                    context,
+                    PaymentResponse(
+                      status: paymentStatus.failed,
+                      message: error,
+                      orderId: orderId,
+                    ),
+                  );
+                }
+              },
+            ),
           if (paymentUrl == null || isLoading)
             Container(
               color: Colors.white,
