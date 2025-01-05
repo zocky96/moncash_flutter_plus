@@ -56,10 +56,10 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       } else {
         Navigator.pop(
           context,
-          // PaymentResponse(
-          //   status: paymentStatus.failed,
-          //   message: "Error in generating token, Please try again later.",
-          // ),
+          PaymentResponse(
+            status: paymentStatus.failed,
+            message: "Error in generating token, Please try again later.",
+          ),
         );
       }
     });
@@ -72,12 +72,12 @@ class _MonCashPaymentState extends State<MonCashPayment> {
         Navigator.pop(
           context,
 
-          //
-          // PaymentResponse(
-          //   status: paymentStatus.failed,
-          //   message: "Payment cancelled by user.",
-          //   orderId: orderId,
-          // ),
+
+          PaymentResponse(
+            status: paymentStatus.failed,
+            message: "Payment cancelled by user.",
+            orderId: orderId,
+          ),
 
         );
         return Future.value(false); // Empêche la fermeture automatique
@@ -116,11 +116,11 @@ class _MonCashPaymentState extends State<MonCashPayment> {
                     log('error: $error');
                     Navigator.pop(
                       context,
-                      // PaymentResponse(
-                      //   status: paymentStatus.failed,
-                      //   message: error,
-                      //   orderId: orderId,
-                      // ),
+                      PaymentResponse(
+                        status: paymentStatus.failed,
+                        message: error,
+                        orderId: orderId,
+                      ),
                     );
                   }
                 },
