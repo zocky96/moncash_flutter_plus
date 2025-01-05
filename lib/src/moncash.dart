@@ -55,14 +55,11 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       if (value != null) {
         setState(() => paymentUrl = value);
       } else {
-        Navigator.popUntil(context,(route){
-          PaymentResponse(
-            status: paymentStatus.failed,
-            message: "Error in generating token, Please try again later.",
-          );
-          count++;
-          return count == 2;
-        }
+        Navigator.pop(context,
+            PaymentResponse(
+              status: paymentStatus.failed,
+              message: "Error in generating token, Please try again later.",
+            )
 
         );
       }
@@ -73,17 +70,13 @@ class _MonCashPaymentState extends State<MonCashPayment> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        int count = 0;
-        Navigator.popUntil(
-          context,(route){
-          PaymentResponse(
-            status: paymentStatus.failed,
-            message: "Payment cancelled by user.",
-            orderId: orderId,
-          );
-          count++;
-          return count == 2;
-        }
+        Navigator.pop(
+          context,
+            PaymentResponse(
+              status: paymentStatus.failed,
+              message: "Payment cancelled by user.",
+              orderId: orderId,
+            )
 
         );
         return Future.value(false); // Empêche la fermeture automatique
@@ -108,33 +101,24 @@ class _MonCashPaymentState extends State<MonCashPayment> {
                   if (url.toString().contains('transactionId')) {
                     final transactionId = Uri.parse(url.toString()).queryParameters['transactionId'];
                     log('transactionId: $transactionId');
-                    int count = 0;
-                    Navigator.popUntil(context,(route){
-                      PaymentResponse(
-                        transanctionId: transactionId,
-                        orderId: orderId,
-                        status: paymentStatus.success,
-                        message: "Payment Successful $transactionId",
-                      );
-                      count++;
-                      return count ==2;
-                    }
+                    Navigator.pop(context,
+                        PaymentResponse(
+                          transanctionId: transactionId,
+                          orderId: orderId,
+                          status: paymentStatus.success,
+                          message: "Payment Successful $transactionId",
+                        )
 
                     );
                   } else if (url.toString().contains('error')) {
                     final error = Uri.parse(url.toString()).queryParameters['error'] ?? 'Error, Please Try Again Later';
                     log('error: $error');
-                    int count = 0;
-                    Navigator.popUntil(context,(route)
-                        {
-                          PaymentResponse(
-                            status: paymentStatus.failed,
-                            message: error,
-                            orderId: orderId,
-                          );
-                          count++;
-                          return count ==2;
-                        }
+                    Navigator.pop(context,
+                        PaymentResponse(
+                          status: paymentStatus.failed,
+                          message: error,
+                          orderId: orderId,
+                        )
                     );
                   }
                 },
