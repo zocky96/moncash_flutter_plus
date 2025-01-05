@@ -71,11 +71,14 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       onWillPop: () async {
         Navigator.pop(
           context,
+        
+          //
           PaymentResponse(
-            status: paymentStatus.cancelled,
+            status: paymentStatus.failed,
             message: "Payment cancelled by user.",
             orderId: orderId,
           ),
+
         );
         return Future.value(false); // Empêche la fermeture automatique
       },
