@@ -35,11 +35,11 @@ class MonCashPayment extends StatefulWidget {
     required this.clientSecret,
     this.loadingWidget,
     this.isStaging = false,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<MonCashPayment> createState() => _MonCashPaymentState();
+  _MonCashPaymentState createState() => _MonCashPaymentState();
 }
 
 class _MonCashPaymentState extends State<MonCashPayment> {
@@ -64,7 +64,9 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
 
-    monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((
+    monCash
+        .getWebviewUrl(amount: widget.amount.toString(), orderId: orderId)
+        .then((
       value,
     ) {
       if (value != null) {
@@ -148,7 +150,7 @@ class _MonCashPaymentState extends State<MonCashPayment> {
                   } else if (url.toString().contains('error')) {
                     final error =
                         Uri.parse(url.toString()).queryParameters['error'] ??
-                        'Erreur, veuillez réessayer plus tard';
+                            'Erreur, veuillez réessayer plus tard';
                     log('error: $error');
                     Navigator.pop(
                       context,
