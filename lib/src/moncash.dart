@@ -6,12 +6,26 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'moncash_utils.dart';
 import 'response_model.dart';
 
+/// Widget de paiement MonCash
+///
+/// Affiche une WebView pour effectuer un paiement via la passerelle MonCash
 class MonCashPayment extends StatefulWidget {
+  /// Montant à payer
   final double amount;
+
+  /// ID de commande personnalisé (généré automatiquement si non fourni)
   final String? orderId;
+
+  /// Client ID MonCash
   final String clientId;
+
+  /// Client Secret MonCash
   final String clientSecret;
+
+  /// Widget de chargement personnalisé
   final Widget? loadingWidget;
+
+  /// Mode staging (true) ou production (false)
   final bool isStaging;
 
   const MonCashPayment({
@@ -21,11 +35,11 @@ class MonCashPayment extends StatefulWidget {
     required this.clientSecret,
     this.loadingWidget,
     this.isStaging = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
-  _MonCashPaymentState createState() => _MonCashPaymentState();
+  State<MonCashPayment> createState() => _MonCashPaymentState();
 }
 
 class _MonCashPaymentState extends State<MonCashPayment> {
@@ -50,20 +64,21 @@ class _MonCashPaymentState extends State<MonCashPayment> {
       orderId = widget.orderId!;
     }
 
-    monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((value) {
-      int count = 0;
+    monCash.getWebviewUrl(amount: widget.amount.toString(), orderId: orderId).then((
+      value,
+    ) {
       if (value != null) {
         setState(() => paymentUrl = value);
       } else {
-        Navigator.popUntil(context,(route){
+        // Erreur lors de la génération du token
+        Navigator.pop(
+          context,
           PaymentResponse(
             status: paymentStatus.failed,
-            message: "Error in generating token, Please try again later.",
-          );
-          count++;
-          return count == 2;
-        }
-
+            message:
+                "Erreur lors de la génération du token, veuillez réessayer plus tard.",
+            orderId: orderId,
+          ),
         );
       }
     });
@@ -71,33 +86,44 @@ class _MonCashPaymentState extends State<MonCashPayment> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        int count = 0;
-        Navigator.popUntil(
-          context,(route){
-          PaymentResponse(
-            status: paymentStatus.failed,
-            message: "Payment cancelled by user.",
-            orderId: orderId,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.pop(
+            context,
+            PaymentResponse(
+              status: paymentStatus.failed,
+              message: "Paiement annulé par l'utilisateur.",
+              orderId: orderId,
+            ),
           );
-          count++;
-          return count == 2;
         }
-
-        );
-        return Future.value(false); // Empêche la fermeture automatique
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Paiement MonCash'),
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.pop(
+                context,
+                PaymentResponse(
+                  status: paymentStatus.failed,
+                  message: "Paiement annulé par l'utilisateur.",
+                  orderId: orderId,
+                ),
+              );
+            },
+          ),
+        ),
         body: Stack(
           children: [
             if (paymentUrl != null)
               InAppWebView(
                 key: webViewKey,
                 initialUrlRequest: URLRequest(url: WebUri(paymentUrl!)),
-                initialOptions: InAppWebViewGroupOptions(
-                  crossPlatform: InAppWebViewOptions(javaScriptEnabled: true),
-                ),
+                initialSettings: InAppWebViewSettings(javaScriptEnabled: true),
                 onWebViewCreated: (controller) {
                   webViewController = controller;
                 },
@@ -106,34 +132,31 @@ class _MonCashPaymentState extends State<MonCashPayment> {
                   log(url.toString());
 
                   if (url.toString().contains('transactionId')) {
-                    final transactionId = Uri.parse(url.toString()).queryParameters['transactionId'];
+                    final transactionId = Uri.parse(
+                      url.toString(),
+                    ).queryParameters['transactionId'];
                     log('transactionId: $transactionId');
-                    int count = 0;
-                    Navigator.popUntil(context,(route){
+                    Navigator.pop(
+                      context,
                       PaymentResponse(
-                        transanctionId: transactionId,
+                        transactionId: transactionId,
                         orderId: orderId,
                         status: paymentStatus.success,
-                        message: "Payment Successful $transactionId",
-                      );
-                      count++;
-                      return count == 2;
-                    }
-
+                        message: "Paiement réussi: $transactionId",
+                      ),
                     );
                   } else if (url.toString().contains('error')) {
-                    final error = Uri.parse(url.toString()).queryParameters['error'] ?? 'Error, Please Try Again Later';
+                    final error =
+                        Uri.parse(url.toString()).queryParameters['error'] ??
+                        'Erreur, veuillez réessayer plus tard';
                     log('error: $error');
-                    int count = 0;
-                    Navigator.popUntil(context,(route){
+                    Navigator.pop(
+                      context,
                       PaymentResponse(
                         status: paymentStatus.failed,
                         message: error,
                         orderId: orderId,
-                      );
-                      count++;
-                      return count == 2;
-                    }
+                      ),
                     );
                   }
                 },
@@ -143,7 +166,8 @@ class _MonCashPaymentState extends State<MonCashPayment> {
                 color: Colors.white,
                 height: MediaQuery.of(context).size.height,
                 child: Center(
-                  child: widget.loadingWidget ?? const CircularProgressIndicator(),
+                  child:
+                      widget.loadingWidget ?? const CircularProgressIndicator(),
                 ),
               ),
           ],

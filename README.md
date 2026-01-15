@@ -38,34 +38,36 @@ Add this in pubspec.yaml
   moncash_flutter: 
 ```
 ### Using
-```
+```dart
 import 'package:moncash_flutter/moncash_flutter.dart';
 ```
 
-```
-   WidgetsBinding.instance!.addPostFrameCallback((_) async {
+```dart
+   WidgetsBinding.instance.addPostFrameCallback((_) async {
       PaymentResponse? data = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => MonCashPayment(
                   isStaging: true,
-                  amount: Amount,
-                  clientId: "Id",
-                  clientSecret: clientSecret,
+                  amount: 100.0,
+                  clientId: "Your Client ID",
+                  clientSecret: "Your Client Secret",
                   loadingWidget: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      LoadingScreen(color: Colors.white),
-                      Text("Redirecting to payment gateway..."),
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20),
+                      Text("Redirection vers la passerelle de paiement..."),
                     ],
                   ),
                 )),
       );
-      if (data != null && data.status == paymentStatus.success && data.transanctionId != null) {
+      
+      if (data != null && data.status == paymentStatus.success && data.transactionId != null) {
         setState(() {
           paymentSuccess = true;
         });
-        placeOrder(transanctionId: data.transanctionId, orderId: data.orderId);
+        placeOrder(transactionId: data.transactionId, orderId: data.orderId);
       } else {
         if (data == null) {
           showErrorDialog(context, "ERROR: Payment Failed");
@@ -78,5 +80,40 @@ import 'package:moncash_flutter/moncash_flutter.dart';
         });
       }
     });
+```
 
-If payment is successful PaymentResponse  will contain the transanctionId from moncash.
+If payment is successful, `PaymentResponse` will contain the `transactionId` from MonCash.
+
+### Migration Guide (v0.0.3 → v0.0.4)
+
+#### Breaking Changes
+
+1. **Flutter Version Requirement**: This version requires Flutter 3.12+ for `PopScope` support.
+
+2. **Property Renaming**: `transanctionId` → `transactionId`
+   ```dart
+   // ❌ Old way (still works but deprecated)
+   String? id = paymentResponse.transanctionId;
+   
+   // ✅ New way
+   String? id = paymentResponse.transactionId;
+   ```
+
+3. **Method Renaming**: `retrieveTransanction()` → `retrieveTransaction()`
+   ```dart
+   // ❌ Old way (no longer available)
+   await monCash.retrieveTransanction(transactionId);
+   
+   // ✅ New way
+   await monCash.retrieveTransaction(transactionId);
+   ```
+
+### What's Fixed in v0.0.4
+
+- **CRITICAL**: Fixed navigation bug where `PaymentResponse` was never properly returned
+- Updated to use modern Flutter APIs (`PopScope`, `InAppWebViewSettings`)
+- Fixed `DioError` → `DioException` for Dio 5.x compatibility
+- Added proper timeout handling (30s) for all HTTP requests
+- Improved error messages and logging
+- Added comprehensive code documentation
+

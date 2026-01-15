@@ -1,6 +1,6 @@
 name: moncash_flutter
 description: Moncash Payment Flutter Plugin
-version: 0.0.3
+version: 0.0.4
 homepage: "https://github.com/gauravmehta13/moncash_flutter"
 
 environment:
