@@ -125,13 +125,28 @@ class _MonCashPaymentState extends State<MonCashPayment> {
               InAppWebView(
                 key: webViewKey,
                 initialUrlRequest: URLRequest(url: WebUri(paymentUrl!)),
-                initialSettings: InAppWebViewSettings(javaScriptEnabled: true),
+                initialSettings: InAppWebViewSettings(
+                  javaScriptEnabled: true,
+                  domStorageEnabled: true,
+                  mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+                  supportMultipleWindows: true,
+                ),
                 onWebViewCreated: (controller) {
                   webViewController = controller;
                 },
+                onLoadStart: (controller, url) {
+                  log('MonCash Webview started loading: $url');
+                  setState(() => isLoading = true);
+                },
+                onReceivedError: (controller, request, error) {
+                  log('MonCash Webview error: ${error.description}');
+                },
+                onConsoleMessage: (controller, consoleMessage) {
+                  log('MonCash Webview console: ${consoleMessage.message}');
+                },
                 onLoadStop: (controller, url) {
                   setState(() => isLoading = false);
-                  log(url.toString());
+                  log('MonCash Webview onLoadStop: $url');
 
                   if (url.toString().contains('transactionId')) {
                     final transactionId = Uri.parse(
